@@ -1,11 +1,6 @@
 package purdy;
 
-import com.sun.jna.Function;
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
-import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinNT;
-import purdy.core.DWM_Kit;
+import purdy.components.BlurBehindFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public abstract class AWindowFrame extends javax.swing.JFrame {
+public abstract class AWindowFrame extends BlurBehindFrame {
     
     String windowPersistenceID = "";
     
@@ -75,8 +69,6 @@ public abstract class AWindowFrame extends javax.swing.JFrame {
     
     public AWindowFrame() {
 
-        setUndecorated(true);
-        setBackground(new Color(0,0,0,0)); 
         setupResizeAndDrag();
 
         parallelInstancesForSnapping.add(this);
@@ -88,16 +80,15 @@ public abstract class AWindowFrame extends javax.swing.JFrame {
                 boolean someoneIsHoldingAlt = holdingAlt;
 
                 if(!someoneIsHoldingAlt)
-                    for(WindowLocationOffset sis : sistersInDrag) {
+                    for(WindowLocationOffset sis : sistersInDrag)
                         if(sis.sisterWindow.holdingAlt) {
                             someoneIsHoldingAlt = true;
                             break;
                         }
-                    }
 
-                if(!someoneIsHoldingAlt) {
+
+                if(!someoneIsHoldingAlt)
                     return;
-                }
 
                 Rectangle myHostScreen = getGraphicsConfiguration().getDevice().getDefaultConfiguration().getBounds();
 
@@ -186,8 +177,7 @@ public abstract class AWindowFrame extends javax.swing.JFrame {
     //screen corner alignment will honor the edge-windows in the cluster of snapped-together windows
     //this way; persistence only needs to remember a groupID!!!!
 
-    String
-        snappedTo_GroupID = "";
+    String snappedTo_GroupID = "";
 
     List<WindowLocationOffset> sistersInDrag = new ArrayList<>();
 
@@ -633,28 +623,5 @@ public abstract class AWindowFrame extends javax.swing.JFrame {
         
     }
 
-    public void colorize(Color c)  { }
-
-
-    public void enableBlurBehind() {
-        
-        WinDef.HWND hwnd = new WinDef.HWND(Native.getWindowPointer(this));
-
-        NativeLibrary user32 = NativeLibrary.getInstance("user32");
-        
-        DWM_Kit.AccentPolicy accent = new DWM_Kit.AccentPolicy();
-        accent.AccentState = DWM_Kit.Accent.ACCENT_ENABLE_BLURBEHIND;
-        accent.GradientColor = 0x7F000000;
-        accent.write();
-
-        DWM_Kit.WindowCompositionAttributeData data = new DWM_Kit.WindowCompositionAttributeData();
-        data.Attribute = DWM_Kit.WindowCompositionAttribute.WCA_ACCENT_POLICY;
-        data.SizeOfData = accent.size();
-        data.Data = accent.getPointer();
-        
-        Function setWindowCompositionAttribute = user32.getFunction("SetWindowCompositionAttribute");
-        setWindowCompositionAttribute.invoke(WinNT.HRESULT.class, new Object[] { hwnd, data });
-        
-    }
 
 }

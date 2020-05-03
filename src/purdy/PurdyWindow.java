@@ -15,8 +15,7 @@ public class PurdyWindow extends AWindowFrame {
         borderColor = new Color(0,0,0,60);
     
     public void setBGColor(Color value) {
-        bodyColor = value;
-        jPanel2.setBackground(bodyColor);
+        jPanel_core.setBackground(bodyColor = value);
     }
 
     public static PurdyWindow quickWindow(String title, boolean titleVisible, Component c) {
@@ -59,78 +58,73 @@ public class PurdyWindow extends AWindowFrame {
         setIconImage(new javax.swing.ImageIcon(PurdyWindow.class.getResource(DEFAULT_ICON_PATH)).getImage());
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
-        jPanel1.setBackground(new Color(  0,  0,  0, 0));
-        jPanel2.setBackground(bodyColor);
-        jPanel3.setBackground(new Color(255,255,255,25));
-        jPanel4.setBackground(new Color(255,255,255,25));
-        jPanel5.setBackground(new Color(255,255,255,25));
-        jPanel_TopBorder.setBackground(new Color(255,255,255,25));
+        jPanel_lowerBody.setBackground(new Color(  0,  0,  0, 0));
+        jPanel_core.setBackground(bodyColor);
         
         MouseListener ml = new MouseAdapter() {
             
             @Override
             public void mouseEntered(MouseEvent e) {
                 if(getDefaultCloseOperation() != JFrame.DO_NOTHING_ON_CLOSE) 
-                    jButton1.setVisible(true);
+                    jButton_exit.setVisible(true);
             }
             
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getButton() == MouseEvent.BUTTON3) 
-                    setWindowTitleVisible(!jPanel_TitleBar.isVisible());                
+                    setWindowTitleVisible(!jPanel_titleBar.isVisible());
             }
             
             @Override
             public void mouseExited(MouseEvent e) {
-                jButton1.setVisible(false);
+                jButton_exit.setVisible(false);
             }
             
         };
                 
-        jButton1.setVisible(false);
-        jButton1.addMouseListener(ml);
+        jButton_exit.setVisible(false);
+        jButton_exit.addMouseListener(ml);
         
-        jPanel_TopBorder.addMouseListener(ml);
-        jPanel_TopBorder.addMouseListener(resizeListener);
-        jPanel_TopBorder.addMouseMotionListener(mml);
-        jPanel_TopBorder.addMouseListener(movement_ML);
-        jPanel_TopBorder.addMouseMotionListener(movement_MML);
+        jPanel_border_top.addMouseListener(ml);
+        jPanel_border_top.addMouseListener(resizeListener);
+        jPanel_border_top.addMouseMotionListener(mml);
+        jPanel_border_top.addMouseListener(movement_ML);
+        jPanel_border_top.addMouseMotionListener(movement_MML);
         
         colorize(borderColor);
-        
+
         enableBlurBehind();
-        
+
     }
     
     public PurdyWindow(Component toAdd) {
         this();
-        jPanel2.add(toAdd);
+        jPanel_core.add(toAdd);
     }
     
     public PurdyWindow(String label, Component toAdd) {
         this(toAdd);
-        jLabel_Title.setText(label);
+        jLabel_title.setText(label);
     }
     
     public PurdyWindow(String label, Component toAdd, Color c) {
         this(label, toAdd);
         colorize(c);
     }
-    
-    @Override
+
     public final void colorize(Color c) {
 
-        jPanel_TopBorder.setBackground(c);
-        jPanel_TitleBar.setBackground(c);
-        jPanel3.setBackground(c);
-        jPanel4.setBackground(c);
-        jPanel5.setBackground(c);
+        jPanel_border_top.setBackground(c);
+        jPanel_titleBar.setBackground(c);
+        jPanel_border_left.setBackground(c);
+        jPanel_border_right.setBackground(c);
+        jPanel_border_bottom.setBackground(c);
 
     }
     
     public void setWindowTitleVisible(boolean value) {
          
-        jPanel_TitleBar.setVisible(value);
+        jPanel_titleBar.setVisible(value);
         
     }
 
@@ -138,9 +132,9 @@ public class PurdyWindow extends AWindowFrame {
 
     private void initComponents() {
 
-        jPanel6 = new javax.swing.JPanel();
-        jPanel_TopBorder = new ColorPanel();
-        jButton1 = new javax.swing.JButton() {
+        jPanel_exitButtonHolder = new javax.swing.JPanel();
+        jPanel_border_top = new ColorPanel();
+        jButton_exit = new javax.swing.JButton() {
             @Override
             protected void paintComponent(Graphics g) {
             g.setColor(this.getBackground());
@@ -148,28 +142,27 @@ public class PurdyWindow extends AWindowFrame {
             super.paintComponent(g);
             }
         };
-        jPanel_TitleBar = new ColorPanel();
-        jLabel_Title = new javax.swing.JLabel();
-        jPanel1 = new ColorPanel();
-        jPanel2 = new ColorPanel();
-        jPanel3 = new ColorPanel();
-        jPanel4 = new ColorPanel();
-        jPanel5 = new ColorPanel();
+        jPanel_titleBar = new ColorPanel();
+        jLabel_title = new javax.swing.JLabel();
+        jPanel_lowerBody = new ColorPanel();
+        jPanel_core = new ColorPanel();
+        jPanel_border_left = new ColorPanel();
+        jPanel_border_right = new ColorPanel();
+        jPanel_border_bottom = new ColorPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
 
-        jPanel6.setOpaque(false);
-        jPanel6.setPreferredSize(new java.awt.Dimension(0, 0));
+        jPanel_exitButtonHolder.setOpaque(false);
+        jPanel_exitButtonHolder.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        jPanel_TopBorder.setBackground(new java.awt.Color(212,238,201,50));
-        jPanel_TopBorder.setMinimumSize(new java.awt.Dimension(10, 3));
-        jPanel_TopBorder.setName("");
-        jPanel_TopBorder.setOpaque(false);
-        jPanel_TopBorder.setPreferredSize(new java.awt.Dimension(199, 3));
+        jPanel_border_top.setBackground(new java.awt.Color(212,238,201,50));
+        jPanel_border_top.setMinimumSize(new java.awt.Dimension(10, 3));
+        jPanel_border_top.setName("");
+        jPanel_border_top.setOpaque(false);
+        jPanel_border_top.setPreferredSize(new java.awt.Dimension(199, 3));
 
-        javax.swing.GroupLayout jPanel_TopBorderLayout = new javax.swing.GroupLayout(jPanel_TopBorder);
-        jPanel_TopBorder.setLayout(jPanel_TopBorderLayout);
+        javax.swing.GroupLayout jPanel_TopBorderLayout = new javax.swing.GroupLayout(jPanel_border_top);
+        jPanel_border_top.setLayout(jPanel_TopBorderLayout);
         jPanel_TopBorderLayout.setHorizontalGroup(
             jPanel_TopBorderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 310, Short.MAX_VALUE)
@@ -179,112 +172,112 @@ public class PurdyWindow extends AWindowFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jButton1.setBackground(new Color(255,50,50,100));
-        jButton1.setBorder(null);
-        jButton1.setBorderPainted(false);
-        jButton1.setContentAreaFilled(false);
-        jButton1.setFocusPainted(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setMinimumSize(new java.awt.Dimension(0, 3));
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        jButton_exit.setBackground(new Color(255,50,50,100));
+        jButton_exit.setBorder(null);
+        jButton_exit.setBorderPainted(false);
+        jButton_exit.setContentAreaFilled(false);
+        jButton_exit.setFocusPainted(false);
+        jButton_exit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton_exit.setMinimumSize(new java.awt.Dimension(0, 3));
+        jButton_exit.addActionListener(this::jButton1ActionPerformed);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jPanel_TopBorder, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+        javax.swing.GroupLayout layout_exitButtonHolder = new javax.swing.GroupLayout(jPanel_exitButtonHolder);
+        jPanel_exitButtonHolder.setLayout(layout_exitButtonHolder);
+        layout_exitButtonHolder.setHorizontalGroup(
+            layout_exitButtonHolder.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout_exitButtonHolder.createSequentialGroup()
+                .addComponent(jPanel_border_top, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jButton_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel_TopBorder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 3, Short.MAX_VALUE))
+        layout_exitButtonHolder.setVerticalGroup(
+            layout_exitButtonHolder.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout_exitButtonHolder.createSequentialGroup()
+                .addGroup(layout_exitButtonHolder.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel_border_top, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_exit, javax.swing.GroupLayout.DEFAULT_SIZE, 3, Short.MAX_VALUE))
                 .addGap(0, 0, 0))
         );
 
-        jPanel_TitleBar.setBackground(new java.awt.Color(212,238,201,50));
-        jPanel_TitleBar.setMinimumSize(new java.awt.Dimension(10, 3));
-        jPanel_TitleBar.setName(""); // NOI18N
-        jPanel_TitleBar.setOpaque(false);
-        jPanel_TitleBar.setPreferredSize(new java.awt.Dimension(199, 3));
+        jPanel_titleBar.setBackground(new java.awt.Color(212,238,201,50));
+        jPanel_titleBar.setMinimumSize(new java.awt.Dimension(10, 3));
+        jPanel_titleBar.setName(""); // NOI18N
+        jPanel_titleBar.setOpaque(false);
+        jPanel_titleBar.setPreferredSize(new java.awt.Dimension(199, 3));
 
-        jLabel_Title.setFont(new java.awt.Font("Trebuchet MS", Font.BOLD, 16)); // NOI18N
-        jLabel_Title.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel_Title.setText("Window Title");
-        jLabel_Title.setMaximumSize(new java.awt.Dimension(0, 0));
-        jLabel_Title.setMinimumSize(new java.awt.Dimension(0, 0));
-        jLabel_Title.setPreferredSize(new java.awt.Dimension(0, 0));
+        jLabel_title.setFont(new java.awt.Font("Trebuchet MS", Font.BOLD, 16)); // NOI18N
+        jLabel_title.setForeground(new java.awt.Color(254, 254, 254));
+        jLabel_title.setText("Window Title");
+        jLabel_title.setMaximumSize(new java.awt.Dimension(0, 0));
+        jLabel_title.setMinimumSize(new java.awt.Dimension(0, 0));
+        jLabel_title.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        javax.swing.GroupLayout jPanel_TitleBarLayout = new javax.swing.GroupLayout(jPanel_TitleBar);
-        jPanel_TitleBar.setLayout(jPanel_TitleBarLayout);
-        jPanel_TitleBarLayout.setHorizontalGroup(
-            jPanel_TitleBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_TitleBarLayout.createSequentialGroup()
+        javax.swing.GroupLayout layout_titleBar = new javax.swing.GroupLayout(jPanel_titleBar);
+        jPanel_titleBar.setLayout(layout_titleBar);
+        layout_titleBar.setHorizontalGroup(
+            layout_titleBar.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout_titleBar.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel_Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel_title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel_TitleBarLayout.setVerticalGroup(
-            jPanel_TitleBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel_Title, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+        layout_titleBar.setVerticalGroup(
+            layout_titleBar.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel_title, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
         );
 
-        jPanel1.setOpaque(false);
+        jPanel_lowerBody.setOpaque(false);
 
-        jPanel2.setOpaque(false);
-        jPanel2.setLayout(new java.awt.BorderLayout());
+        jPanel_core.setOpaque(false);
+        jPanel_core.setLayout(new java.awt.BorderLayout());
 
-        jPanel3.setOpaque(false);
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        jPanel_border_left.setOpaque(false);
+        jPanel_border_left.setLayout(new java.awt.BorderLayout());
 
-        jPanel4.setOpaque(false);
-        jPanel4.setLayout(new java.awt.BorderLayout());
+        jPanel_border_right.setOpaque(false);
+        jPanel_border_right.setLayout(new java.awt.BorderLayout());
 
-        jPanel5.setOpaque(false);
-        jPanel5.setLayout(new java.awt.BorderLayout());
+        jPanel_border_bottom.setOpaque(false);
+        jPanel_border_bottom.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout layout_lowerBody = new javax.swing.GroupLayout(jPanel_lowerBody);
+        jPanel_lowerBody.setLayout(layout_lowerBody);
+        layout_lowerBody.setHorizontalGroup(
+            layout_lowerBody.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout_lowerBody.createSequentialGroup()
+                .addComponent(jPanel_border_left, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout_lowerBody.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel_core, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel_border_bottom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel_border_right, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+        layout_lowerBody.setVerticalGroup(
+            layout_lowerBody.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel_border_left, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout_lowerBody.createSequentialGroup()
+                .addComponent(jPanel_core, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel_border_bottom, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel_border_right, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-            .addComponent(jPanel_TitleBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+        javax.swing.GroupLayout layout_root = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout_root);
+        layout_root.setHorizontalGroup(
+            layout_root.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel_lowerBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel_exitButtonHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+            .addComponent(jPanel_titleBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+        layout_root.setVerticalGroup(
+            layout_root.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout_root.createSequentialGroup()
+                .addComponent(jPanel_exitButtonHolder, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel_TitleBar, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel_titleBar, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel_lowerBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -296,29 +289,25 @@ public class PurdyWindow extends AWindowFrame {
 
     public static void main(String[] args) {
 
-        java.awt.EventQueue.invokeLater(() -> {
+        PurdyWindow.quickWindow("Test Alert", new JPanel(new BorderLayout()) {{
+            setBackground(new Color(0,0,0,0));
+        }}).setWindowTitleVisible(false);
 
-            PurdyWindow.quickWindow("Test Alert", new JPanel(new BorderLayout()) {{
-                setBackground(new Color(0,0,0,1));
-            }}).setWindowTitleVisible(false);
-
-            PurdyWindow.quickWindow("Test Window", new JPanel(new BorderLayout()) {{
-                setBackground(new Color(0,0,0,1));
-            }});
-
-        });
+        PurdyWindow.quickWindow("Test Window", new JPanel(new BorderLayout()) {{
+            setBackground(new Color(0,0,0,0));
+        }});
         
     }
 
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel_Title;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel_TitleBar;
-    private javax.swing.JPanel jPanel_TopBorder;
+    private javax.swing.JButton jButton_exit;
+    private javax.swing.JLabel jLabel_title;
+    private javax.swing.JPanel jPanel_lowerBody;
+    private javax.swing.JPanel jPanel_core;
+    private javax.swing.JPanel jPanel_border_left;
+    private javax.swing.JPanel jPanel_border_right;
+    private javax.swing.JPanel jPanel_border_bottom;
+    private javax.swing.JPanel jPanel_exitButtonHolder;
+    private javax.swing.JPanel jPanel_titleBar;
+    private javax.swing.JPanel jPanel_border_top;
 
 }

@@ -1,4 +1,4 @@
-package purdy.core;
+package purdy.components;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
@@ -12,10 +12,11 @@ public class DWM_Kit {
 
     public static class DWM_BLURBEHIND extends Structure {
 
-        public int dwFlags;
         public boolean fEnable;
-        public int hRgnBlur;
-        public int fTransitionOnMaximized;
+        public int
+            dwFlags,
+            hRgnBlur,
+            fTransitionOnMaximized;
 
         @Override
         protected List<String> getFieldOrder() {
@@ -31,10 +32,11 @@ public class DWM_Kit {
 
     public class MARGINS extends Structure {
 
-        public int cxLeftWidth;
-        public int cxRightWidth;
-        public int cyTopHeight;
-        public int cyBottomHeight;
+        public int
+            cxLeftWidth,
+            cxRightWidth,
+            cyTopHeight,
+            cyBottomHeight;
 
         @Override
         protected List<String> getFieldOrder() {
@@ -57,9 +59,10 @@ public class DWM_Kit {
                 "SizeOfData"
             );
 
-        public int Attribute;
         public Pointer Data;
-        public int SizeOfData;
+        public int
+            Attribute,
+            SizeOfData;
 
         @Override
         protected List<String> getFieldOrder() {
@@ -69,12 +72,12 @@ public class DWM_Kit {
     }
 
     public interface Accent {
-        int ACCENT_DISABLED = 0;
-        int ACCENT_ENABLE_GRADIENT = 1;
-        int ACCENT_ENABLE_TRANSPARENTGRADIENT = 2;
-        int ACCENT_ENABLE_BLURBEHIND = 3;
-        int ACCENT_ENABLE_ACRYLIC = 4; // YES, available on build 17063
-        int ACCENT_INVALID_STATE = 5;
+        int ACCENT_DISABLED = 0,
+            ACCENT_ENABLE_GRADIENT = 1,
+            ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+            ACCENT_ENABLE_BLURBEHIND = 3,
+            ACCENT_ENABLE_ACRYLIC = 4, // YES, available on build 17063
+            ACCENT_INVALID_STATE = 5;
     }
 
     public interface WindowCompositionAttribute {
@@ -91,10 +94,11 @@ public class DWM_Kit {
                 "AnimationId"
             );
 
-        public int AccentState;
-        public int AccentFlags;
-        public int GradientColor;
-        public int AnimationId;
+        public int
+            AccentState,
+            AccentFlags,
+            GradientColor,
+            AnimationId;
 
         @Override
         protected List<String> getFieldOrder() {

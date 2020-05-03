@@ -5,6 +5,12 @@ import java.awt.*;
 
 public class ColorPanel extends JPanel {
 
+    public ColorPanel() {}
+
+    public ColorPanel(Color backgroundColor) {
+        this.setBackground(backgroundColor);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(this.getBackground());
