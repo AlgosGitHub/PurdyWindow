@@ -43,10 +43,10 @@ public abstract class AWindowFrame extends BlurBehindFrame {
         resizing_W   =  false,
         resizing_NW  =  false;
     
-    MouseMotionListener mml;
+    MouseMotionListener movement_motionListener;
     MouseAdapter resizeListener;
-    public MouseListener movement_ML;    
-    public MouseMotionListener movement_MML;
+    public MouseListener movement_mouseListener;
+    public MouseMotionListener movement_mouseMotionListener;
 
     class WindowLocationOffset {
 
@@ -75,7 +75,7 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
         addComponentListener(new ComponentAdapter() {
             
-            void ensureWindowIsOnScreen(ComponentEvent ce) {
+            void ensureWindowIsOnScreen() {
 
                 boolean someoneIsHoldingAlt = holdingAlt;
 
@@ -94,12 +94,12 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
                 //todo: only run this when we first create the window, and otherwise handle screen edge snapping with the other snapping features
 
-                int winX = getX(),
-                    winY = getY(),
-                    minX = winX,
-                    minY = winY,
-                    maxX = winX + getWidth(),
-                    maxY = winY + getHeight();
+                int winX  =  getX(),
+                    winY  =  getY(),
+                    minX  =  winX,
+                    minY  =  winY,
+                    maxX  =  winX + getWidth(),
+                    maxY  =  winY + getHeight();
 
                 for(WindowLocationOffset sis : sistersInDrag) {
                     minX = Math.min(sis.sisterWindow.getX(), minX);
@@ -109,12 +109,10 @@ public abstract class AWindowFrame extends BlurBehindFrame {
                     maxY = Math.max(sis.sisterWindow.getY() + sis.sisterWindow.getHeight(), maxY);
                 }
 
-                int
-                    leftOffset = winX - minX,
-                    topOffset = winY - minY;
-
-                int winWidth = maxX - winX,
-                    winHeight = maxY - winY;
+                int leftOffset  =  winX - minX,
+                    topOffset   =  winY - minY,
+                    winWidth    =  maxX - winX,
+                    winHeight   =  maxY - winY;
 
                 if(minX < myHostScreen.x) {
                     snappedX = minX + leftOffset + 5;
@@ -144,17 +142,17 @@ public abstract class AWindowFrame extends BlurBehindFrame {
             
             @Override
             public void componentResized(ComponentEvent ce) {
-                ensureWindowIsOnScreen(ce);
+                ensureWindowIsOnScreen();
             }
 
             @Override
             public void componentMoved(ComponentEvent ce) {
-                ensureWindowIsOnScreen(ce);
+                ensureWindowIsOnScreen();
             }
 
             @Override
             public void componentShown(ComponentEvent ce) {
-                ensureWindowIsOnScreen(ce);
+                ensureWindowIsOnScreen();
             }
             
         });
@@ -185,7 +183,7 @@ public abstract class AWindowFrame extends BlurBehindFrame {
         
         final JFrame frame = this; 
         
-        movement_ML = new MouseAdapter() {
+        movement_mouseListener = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 startX = e.getXOnScreen();
@@ -206,14 +204,14 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                resizingInProgress = false;
-                isSnapped_X = false;
-                isSnapped_Y = false;
-                holdingControl = false;
-                holdingAlt = false;
+                resizingInProgress  =  false;
+                isSnapped_X         =  false;
+                isSnapped_Y         =  false;
+                holdingControl      =  false;
+                holdingAlt          =  false;
                 sistersInDrag.forEach( offset -> {
-                    offset.sisterWindow.holdingAlt = false;
-                    offset.sisterWindow.holdingControl = false;
+                    offset.sisterWindow.holdingAlt      =  false;
+                    offset.sisterWindow.holdingControl  =  false;
                 });
             }
 
@@ -224,7 +222,7 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
         };
 
-        movement_MML = new MouseMotionAdapter() {
+        movement_mouseMotionListener = new MouseMotionAdapter() {
 
             void setGroupID(AWindowFrame sisWin) {
 
@@ -239,16 +237,16 @@ public abstract class AWindowFrame extends BlurBehindFrame {
             @Override
             public void mouseDragged(MouseEvent e) {
 
-                int deltaX = e.getXOnScreen() - startX - myXinWindow;
-                int deltaY = e.getYOnScreen() - startY - myYinWindow;
+                int deltaX  =  e.getXOnScreen() - startX - myXinWindow,
+                    deltaY  =  e.getYOnScreen() - startY - myYinWindow;
 
                 //find containing monitor
                   //snap-to 8px from walls if within 10px of wall
 
                 if(!resizingInProgress) {
 
-                    int newX = startX + deltaX,
-                        newY = startY + deltaY;
+                    int newX  =  startX + deltaX,
+                        newY  =  startY + deltaY;
 
                     if(holdingControl) {
 
@@ -344,18 +342,16 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
         };
         
-        mml = new MouseMotionListener() {
+        movement_motionListener = new MouseMotionListener() {
 
             boolean cursorChanged = false;
 
             @Override
             public void mouseDragged(MouseEvent e) {
 
-                
                 if(resizing_W) {
                     
-                    int newWidth = Math.max(frame.getMinimumSize().width,
-                            initialWidth + (left - e.getXOnScreen()));
+                    int newWidth = Math.max(frame.getMinimumSize().width, initialWidth + (left - e.getXOnScreen()));
 
                     frame.setLocation(left - (left - e.getXOnScreen()), top);
                     frame.setSize(newWidth, initialHeight);
@@ -364,10 +360,8 @@ public abstract class AWindowFrame extends BlurBehindFrame {
                     
                 } else if(resizing_NW) {
                     
-                    int newWidth = Math.max(frame.getMinimumSize().width,
-                            initialWidth + (left - e.getXOnScreen()));
-                    int newHeight = Math.max(frame.getMinimumSize().height,
-                            bottom - e.getYOnScreen()); 
+                    int newWidth = Math.max(frame.getMinimumSize().width, initialWidth + (left - e.getXOnScreen())),
+                        newHeight = Math.max(frame.getMinimumSize().height, bottom - e.getYOnScreen());
 
                     frame.setLocation(left - (left - e.getXOnScreen()), bottom - newHeight);
                     frame.setSize(newWidth, newHeight);
@@ -376,10 +370,8 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
                 } else if(resizing_SW) {
                     
-                    int newWidth = Math.max(frame.getMinimumSize().width,
-                            initialWidth + (left - e.getXOnScreen()));
-                    int newHeight = Math.max(frame.getMinimumSize().height,
-                            e.getYOnScreen() - top); 
+                    int newWidth = Math.max(frame.getMinimumSize().width,initialWidth + (left - e.getXOnScreen())),
+                        newHeight = Math.max(frame.getMinimumSize().height, e.getYOnScreen() - top);
 
                     frame.setLocation(left - (left - e.getXOnScreen()), top);
                     frame.setSize(newWidth, newHeight);
@@ -394,11 +386,10 @@ public abstract class AWindowFrame extends BlurBehindFrame {
                     
                 } else if(resizing_SE) {
                     
-                    int targetX = e.getXOnScreen();
-                    int targetY = e.getYOnScreen();
-
-                    int newWidth = Math.max(frame.getMinimumSize().width, targetX - left);
-                    int newHeight = Math.max(frame.getMinimumSize().height, targetY - top); 
+                    int targetX = e.getXOnScreen(),
+                        targetY = e.getYOnScreen(),
+                        newWidth = Math.max(frame.getMinimumSize().width, targetX - left),
+                        newHeight = Math.max(frame.getMinimumSize().height, targetY - top);
 
                     frame.setLocation(left, top);
                     frame.setSize(newWidth, newHeight);
@@ -429,11 +420,10 @@ public abstract class AWindowFrame extends BlurBehindFrame {
             
             @Override
             public void mouseMoved(MouseEvent e) {
-                int width = frame.getWidth();
-                int height = frame.getHeight();
-                
-                int mouse_X = e.getX();
-                int mouse_Y = e.getY();
+                int width   = frame.getWidth(),
+                    height  = frame.getHeight(),
+                    mouse_X = e.getX(),
+                    mouse_Y = e.getY();
                 
                 if(mouse_X < 10 && ( mouse_Y > 10 && mouse_Y < height-10) ) {
                     frame.setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
@@ -457,8 +447,8 @@ public abstract class AWindowFrame extends BlurBehindFrame {
                     frame.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
                     cursorChanged = true;
                 } else if(cursorChanged) {
-                    cursorChanged = false;
                     frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    cursorChanged = false;
                 }
                            
             }
@@ -469,18 +459,17 @@ public abstract class AWindowFrame extends BlurBehindFrame {
             
             @Override
             public void mousePressed(MouseEvent e){
-                left = frame.getX();
-                right = frame.getX() + frame.getWidth();
-                top = frame.getY();
-                bottom = frame.getY() + frame.getHeight();
-                initialWidth = frame.getWidth();
-                initialHeight = frame.getHeight();
+                left           =  frame.getX();
+                right          =  frame.getX() + frame.getWidth();
+                top            =  frame.getY();
+                bottom         =  frame.getY() + frame.getHeight();
+                initialWidth   =  frame.getWidth();
+                initialHeight  =  frame.getHeight();
                 
-                int 
-                    width = frame.getWidth(),
-                    height = frame.getHeight(),                        
-                    mouse_X = e.getX(),
-                    mouse_Y = e.getY();
+                int width    =  frame.getWidth(),
+                    height   =  frame.getHeight(),
+                    mouse_X  =  e.getX(),
+                    mouse_Y  =  e.getY();
                 
                 if(mouse_X < 10 && ( mouse_Y > 10 && mouse_Y < height-10) ) {
                     resizing_W = true;
@@ -503,22 +492,22 @@ public abstract class AWindowFrame extends BlurBehindFrame {
             @Override
             public void mouseReleased(MouseEvent e) {
                 frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                resizing_N = false;
-                resizing_S = false;
-                resizing_E = false;
-                resizing_W = false;
-                resizing_NE = false;
-                resizing_NW = false;
-                resizing_SE = false;
-                resizing_SW = false;
+                resizing_N   =  false;
+                resizing_S   =  false;
+                resizing_E   =  false;
+                resizing_W   =  false;
+                resizing_NE  =  false;
+                resizing_NW  =  false;
+                resizing_SE  =  false;
+                resizing_SW  =  false;
             }
             
         };
         
         this.addMouseListener(resizeListener);
-        this.addMouseMotionListener(mml);
-        this.addMouseListener(movement_ML);
-        this.addMouseMotionListener(movement_MML);
+        this.addMouseMotionListener(movement_motionListener);
+        this.addMouseListener(movement_mouseListener);
+        this.addMouseMotionListener(movement_mouseMotionListener);
 
         this.setFocusable(true);
         this.addKeyListener(new KeyAdapter() {
@@ -539,31 +528,33 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
     }
     
-    public void enablePersistentSizing(String windowSizeMemoryID) {
+    public boolean enablePersistentSizing(String windowSizeMemoryID) {
+
+        boolean cacheExists = false;
 
         //todo: save all windows persistence metadata to a single cache file?
         //todo: remember if titleBar was visible too.
 
         this.windowPersistenceID = windowSizeMemoryID;
-        String filePath = "d:/moneypenny/windows/"+windowSizeMemoryID;
+        String filePath = System.getProperty("user.home")+"\\purdy_cache\\"+windowSizeMemoryID;
         
         Path input = Paths.get(filePath);
-        if (input.toFile().canRead() && input.toFile().isFile()) 
+        if (input.toFile().canRead() && input.toFile().isFile()) {
+            cacheExists = true;
             try (BufferedReader reader = Files.newBufferedReader(input, StandardCharsets.UTF_8)) {
-                
-                int x, width,
-                    y, height;
 
-                
-                for (String line; (line = reader.readLine()) != null; ) 
-                    if(!line.isEmpty()) {
+                int x, width,
+                        y, height;
+
+                for (String line; (line = reader.readLine()) != null; )
+                    if (!line.isEmpty()) {
                         String[] values = line.split("/");
                         x = Integer.parseInt(values[0]);
                         y = Integer.parseInt(values[1]);
-                        width  = Integer.parseInt(values[2]);
+                        width = Integer.parseInt(values[2]);
                         height = Integer.parseInt(values[3]);
 
-                        if(values.length > 4)
+                        if (values.length > 4)
                             this.snappedTo_GroupID = String.valueOf(values[4]);
 
                         this.setLocation(x, y);
@@ -573,14 +564,15 @@ public abstract class AWindowFrame extends BlurBehindFrame {
             } catch (Exception ex) {
                 ex.printStackTrace(System.out);
             }
+        }
         
-        final AWindowFrame me = this;
+        final AWindowFrame windowFramePointer = this;
         
-        this.addComponentListener(new ComponentListener() {
+        this.addComponentListener(new ComponentAdapter() {
             
             synchronized void saveSizeAndPosition() {
 
-                File path = new File(filePath.substring(0, filePath.lastIndexOf("/")));
+                File path = new File(filePath.substring(0, filePath.lastIndexOf("\\")));
 
                 try {
 
@@ -589,7 +581,7 @@ public abstract class AWindowFrame extends BlurBehindFrame {
 
                     try (FileOutputStream fos = new FileOutputStream(filePath, false); PrintStream ps = new PrintStream(fos)) {
 
-                        ps.println(me.getX() + "/" + me.getY() + "/" + me.getWidth() + "/" + me.getHeight() + "/" + me.snappedTo_GroupID);
+                        ps.println(windowFramePointer.getX() + "/" + windowFramePointer.getY() + "/" + windowFramePointer.getWidth() + "/" + windowFramePointer.getHeight() + "/" + windowFramePointer.snappedTo_GroupID);
 
                     }
 
@@ -609,18 +601,10 @@ public abstract class AWindowFrame extends BlurBehindFrame {
                 saveSizeAndPosition();
             }
 
-            @Override
-            public void componentShown(ComponentEvent ce) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent ce) {
-
-            }
-
         }); 
-        
+
+        return cacheExists;
+
     }
 
 

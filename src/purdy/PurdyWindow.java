@@ -11,40 +11,24 @@ public class PurdyWindow extends AWindowFrame {
     static final String DEFAULT_ICON_PATH = "images/sphere.png";
     
     Color
-        bodyColor = new Color(0,0,0,60),
+        backgroundColor = new Color(0,0,0,60),
         borderColor = new Color(0,0,0,60);
-    
-    public void setBGColor(Color value) {
-        jPanel_core.setBackground(bodyColor = value);
+
+    public static PurdyWindow quickWindow(String title, Component c) {
+        return quickWindow(title, true, c, JFrame.EXIT_ON_CLOSE);
     }
 
     public static PurdyWindow quickWindow(String title, boolean titleVisible, Component c) {
-        return quickWindow(title, titleVisible, c, new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
+        return quickWindow(title, titleVisible, c, JFrame.EXIT_ON_CLOSE);
     }
 
-    public static PurdyWindow quickWindow(String title, Component c) {
-        return quickWindow(title, true, c, new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-    }
-
-    public static PurdyWindow quickWindow(String title, boolean titleVisible, Component c, WindowListener listener) {
+    public static PurdyWindow quickWindow(String title, boolean titleVisible, Component c, int defaultCloseOperation) {
         return new PurdyWindow(title, c) {{
 
-            addWindowListener(listener);
+            setDefaultCloseOperation(defaultCloseOperation);
 
-            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            setLocation(500, 500);
-            enablePersistentSizing(title);
-            setVisible(true);
+            if(!enablePersistentSizing(title))
+                setLocation(500, 500);
 
             setWindowTitleVisible(titleVisible);
 
@@ -55,11 +39,11 @@ public class PurdyWindow extends AWindowFrame {
 
         initComponents();
         
-        setIconImage(new javax.swing.ImageIcon(PurdyWindow.class.getResource(DEFAULT_ICON_PATH)).getImage());
+        setIcon(new javax.swing.ImageIcon(PurdyWindow.class.getResource(DEFAULT_ICON_PATH)).getImage());
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        
-        jPanel_lowerBody.setBackground(new Color(  0,  0,  0, 0));
-        jPanel_core.setBackground(bodyColor);
+
+        setBackgroundColor(backgroundColor);
+        setBorderColor(borderColor);
         
         MouseListener ml = new MouseAdapter() {
             
@@ -87,13 +71,16 @@ public class PurdyWindow extends AWindowFrame {
         
         jPanel_border_top.addMouseListener(ml);
         jPanel_border_top.addMouseListener(resizeListener);
-        jPanel_border_top.addMouseMotionListener(mml);
-        jPanel_border_top.addMouseListener(movement_ML);
-        jPanel_border_top.addMouseMotionListener(movement_MML);
-        
-        colorize(borderColor);
+        jPanel_border_top.addMouseMotionListener(movement_motionListener);
+        jPanel_border_top.addMouseListener(movement_mouseListener);
+        jPanel_border_top.addMouseMotionListener(movement_mouseMotionListener);
 
-        enableBlurBehind();
+        jPanel_titleBar.addMouseListener(ml);
+        jPanel_titleBar.addMouseMotionListener(movement_motionListener);
+        jPanel_titleBar.addMouseListener(movement_mouseListener);
+        jPanel_titleBar.addMouseMotionListener(movement_mouseMotionListener);
+
+        SwingUtilities.invokeLater(this::enableBlurBehind);
 
     }
     
@@ -102,38 +89,59 @@ public class PurdyWindow extends AWindowFrame {
         jPanel_core.add(toAdd);
     }
     
-    public PurdyWindow(String label, Component toAdd) {
+    public PurdyWindow(String windowTitle, Component toAdd) {
         this(toAdd);
-        jLabel_title.setText(label);
+        setWindowTitle(windowTitle);
     }
     
-    public PurdyWindow(String label, Component toAdd, Color c) {
-        this(label, toAdd);
-        colorize(c);
+    public PurdyWindow(String windowTitle, Component toAdd, Color borderColor) {
+        this(windowTitle, toAdd);
+        setBorderColor(borderColor);
     }
 
-    public final void colorize(Color c) {
+    //=- Color & Decor
 
-        jPanel_border_top.setBackground(c);
-        jPanel_titleBar.setBackground(c);
-        jPanel_border_left.setBackground(c);
-        jPanel_border_right.setBackground(c);
+    public final void setIcon(Image icon) {
+        setIconImage(icon);
+    }
+
+    public final Color getBackgroundColor() {
+        return backgroundColor;
+    }
+    public final void setBackgroundColor(Color value) {
+        jPanel_core.setBackground(backgroundColor = value);
+    }
+
+    public final Color getBorderColor() {
+        return borderColor;
+    }
+    public final void setBorderColor(Color c) {
+
+        borderColor = c;
+
+        jPanel_border_top   .setBackground(c);
+        jPanel_titleBar     .setBackground(c);
+        jPanel_border_left  .setBackground(c);
+        jPanel_border_right .setBackground(c);
         jPanel_border_bottom.setBackground(c);
 
     }
     
     public void setWindowTitleVisible(boolean value) {
-         
         jPanel_titleBar.setVisible(value);
-        
+    }
+    public void setWindowTitle(String newTitle) {
+        jLabel_title.setText(newTitle);
+        setTitle(newTitle);//set frame title
     }
 
     //=- Movement 
 
     private void initComponents() {
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
         jPanel_exitButtonHolder = new javax.swing.JPanel();
-        jPanel_border_top = new ColorPanel();
         jButton_exit = new javax.swing.JButton() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -142,15 +150,17 @@ public class PurdyWindow extends AWindowFrame {
             super.paintComponent(g);
             }
         };
-        jPanel_titleBar = new ColorPanel();
-        jLabel_title = new javax.swing.JLabel();
-        jPanel_lowerBody = new ColorPanel();
-        jPanel_core = new ColorPanel();
-        jPanel_border_left = new ColorPanel();
-        jPanel_border_right = new ColorPanel();
-        jPanel_border_bottom = new ColorPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jLabel_title = new javax.swing.JLabel();
+
+        jPanel_border_top     =  new ColorPanel();
+        jPanel_titleBar       =  new ColorPanel();
+        jPanel_lowerBody      =  new ColorPanel();
+        jPanel_core           =  new ColorPanel();
+        jPanel_border_left    =  new ColorPanel();
+        jPanel_border_right   =  new ColorPanel();
+        jPanel_border_bottom  =  new ColorPanel();
+
 
         jPanel_exitButtonHolder.setOpaque(false);
         jPanel_exitButtonHolder.setPreferredSize(new java.awt.Dimension(0, 0));
@@ -179,7 +189,7 @@ public class PurdyWindow extends AWindowFrame {
         jButton_exit.setFocusPainted(false);
         jButton_exit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton_exit.setMinimumSize(new java.awt.Dimension(0, 3));
-        jButton_exit.addActionListener(this::jButton1ActionPerformed);
+        jButton_exit.addActionListener(this::exitButtonPushed);
 
         javax.swing.GroupLayout layout_exitButtonHolder = new javax.swing.GroupLayout(jPanel_exitButtonHolder);
         jPanel_exitButtonHolder.setLayout(layout_exitButtonHolder);
@@ -227,6 +237,7 @@ public class PurdyWindow extends AWindowFrame {
         );
 
         jPanel_lowerBody.setOpaque(false);
+        jPanel_lowerBody.setBackground(new Color(  0,  0,  0, 0));
 
         jPanel_core.setOpaque(false);
         jPanel_core.setLayout(new java.awt.BorderLayout());
@@ -283,31 +294,21 @@ public class PurdyWindow extends AWindowFrame {
         pack();
     }
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void exitButtonPushed(java.awt.event.ActionEvent evt) {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-    }
-
-    public static void main(String[] args) {
-
-        PurdyWindow.quickWindow("Test Alert", new JPanel(new BorderLayout()) {{
-            setBackground(new Color(0,0,0,0));
-        }}).setWindowTitleVisible(false);
-
-        PurdyWindow.quickWindow("Test Window", new JPanel(new BorderLayout()) {{
-            setBackground(new Color(0,0,0,0));
-        }});
-        
     }
 
     private javax.swing.JButton jButton_exit;
     private javax.swing.JLabel jLabel_title;
-    private javax.swing.JPanel jPanel_lowerBody;
-    private javax.swing.JPanel jPanel_core;
-    private javax.swing.JPanel jPanel_border_left;
-    private javax.swing.JPanel jPanel_border_right;
-    private javax.swing.JPanel jPanel_border_bottom;
-    private javax.swing.JPanel jPanel_exitButtonHolder;
-    private javax.swing.JPanel jPanel_titleBar;
-    private javax.swing.JPanel jPanel_border_top;
+
+    private javax.swing.JPanel
+        jPanel_lowerBody,
+        jPanel_core,
+        jPanel_border_left,
+        jPanel_border_right,
+        jPanel_border_bottom,
+        jPanel_exitButtonHolder,
+        jPanel_titleBar,
+        jPanel_border_top;
 
 }
