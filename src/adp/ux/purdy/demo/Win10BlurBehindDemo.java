@@ -1,7 +1,7 @@
-package purdy.demo;
+package adp.ux.purdy.demo;
 
-import purdy.components.BlurBehindFrame;
-import purdy.components.ColorPanel;
+import adp.ux.purdy.components.BlurBehindFrame;
+import adp.ux.purdy.components.ColorPanel;
 
 import javax.swing.*;
 import java.awt.*;

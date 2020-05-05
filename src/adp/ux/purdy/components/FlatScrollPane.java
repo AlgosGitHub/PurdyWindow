@@ -1,4 +1,4 @@
-package purdy.components;
+package adp.ux.purdy.components;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;

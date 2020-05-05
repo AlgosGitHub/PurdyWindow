@@ -1,6 +1,6 @@
-package purdy;
+package adp.ux.purdy;
 
-import purdy.components.BlurBehindFrame;
+import adp.ux.purdy.components.BlurBehindFrame;
 
 import javax.swing.*;
 import java.awt.*;

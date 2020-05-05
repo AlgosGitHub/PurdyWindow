@@ -1,6 +1,6 @@
-package purdy;
+package adp.ux.purdy;
 
-import purdy.components.ColorPanel;
+import adp.ux.purdy.components.ColorPanel;
 
 import javax.swing.*;
 import java.awt.*;

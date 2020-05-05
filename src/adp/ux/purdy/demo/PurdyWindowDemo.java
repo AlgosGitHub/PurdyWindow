@@ -1,6 +1,6 @@
-package purdy.demo;
+package adp.ux.purdy.demo;
 
-import purdy.PurdyWindow;
+import adp.ux.purdy.PurdyWindow;
 
 import javax.swing.*;
 import java.awt.*;

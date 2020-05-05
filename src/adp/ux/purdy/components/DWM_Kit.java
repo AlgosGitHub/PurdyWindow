@@ -1,4 +1,4 @@
-package purdy.components;
+package adp.ux.purdy.components;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
